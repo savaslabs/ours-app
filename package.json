@@ -1,0 +1,15 @@
+{
+  "name": "ours-app",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/savaslabs/ours-app.git",
+  "author": "Madeline Streilein <mcstreilein@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "firebase": "^7.13.1",
+    "firebase-admin": "^8.10.0",
+    "firebase-functions": "^3.5.0",
+    "firebase-tools": "^8.0.0"
+  },
+  "dependencies": {}
+}
