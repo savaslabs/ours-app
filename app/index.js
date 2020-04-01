@@ -1,11 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import ReactDOM from 'react-dom'
-import './index.scss'
+import React from 'react';
+import ReactDOM from 'react-dom';
+import App from './App';
 
-function App() {
-  return (
-    <div>Hello</div>
-  )
-}
-
-ReactDOM.render(<App />, document.getElementById('app'))
+ReactDOM.render(<App />, document.getElementById('app'));
