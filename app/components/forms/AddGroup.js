@@ -18,30 +18,42 @@ function AddGroup () {
   return (
     <React.Fragment>
       <form>
+        <label html-for='group-name'>Group Name</label>
+        <input id='group-name' type='text' name='textfield' />
         <fieldset>
-          <label html-for='group-name'>Group Name</label>
-          <input id='group-name' type='text' name='textfield'></input>
-          <label html-for='co-owners'>Co-owners</label>
-
-          {emails.map((value, idx) => {
-            return (
-              <input
-                type='email'
-                key={idx}
-                data-idx={idx}
-                name='email'
-                value={emails[idx].email}
-                className='email'
-                onChange={handleNewEmail}
-              ></input>
-            )
-          })}
-          <input
-            type='button'
-            value='Add Another Co-Owner'
-            onClick={addEmail}
-          />
+          <legend>Add Items</legend>
+          <label html-for='item-name'>Item</label>
+          <input type='text' name='item-name' />
+          <label html-for='image'>Upload Image</label>
+          <input type='file' name='image' />
+          <label html-for='cost'>Cost of item</label>
+          <input type='numeric' name='cost' />
+          <fieldset>
+            <legend>Is this item fully paid for?</legend>
+            <input type='radio' id='yes' name='paid' value='yes' />
+            <label html-for='yes'>Yes</label>
+            <input type='radio' id='no' name='paid' value='no' />
+            <label html-for='no'>No</label>
+          </fieldset>
         </fieldset>
+        <label html-for='email'>Co-owners</label>
+
+        {emails.map((value, idx) => {
+          return (
+            <input
+              type='email'
+              key={idx}
+              data-idx={idx}
+              name='email'
+              value={emails[idx].email}
+              className='email'
+              onChange={handleNewEmail}
+            />
+          )
+        })}
+        <input type='button' value='Add Another Co-Owner' onClick={addEmail} />
+
+        <input type='submit' name='submit' />
       </form>
     </React.Fragment>
   )
