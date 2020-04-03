@@ -8,7 +8,7 @@ function AddGroup () {
   }
 
   const blankItem = {
-    item_name: '',
+    itemName: '',
     image: '',
     cost: '',
     paidOff: null,
@@ -17,7 +17,7 @@ function AddGroup () {
   }
 
   const blankCoOwner = {
-    first_name: '',
+    firstName: '',
     email: ''
   }
 
@@ -51,15 +51,15 @@ function AddGroup () {
         <label html-for='group-name'>Group Name</label>
         <input id='group-name' type='text' name='textfield' />
         <label html-for='email'>Co-owners</label>
-        {coOwners.map((value, idx) => {
+        {coOwners.map((coOwner, idx) => {
           return (
             <React.Fragment key={idx}>
               <input
                 type='text'
-                className='first_name'
+                className='firstName'
                 value={coOwners[idx].first_name}
                 data-idx={idx}
-                name='first_name'
+                name='firstName'
                 onChange={handleNewCoOwner}
               />
               <input
@@ -81,16 +81,16 @@ function AddGroup () {
 
         <fieldset>
           <legend>Add Items</legend>
-          {items.map((value, idx) => {
+          {items.map((item, idx) => {
             return (
               <React.Fragment key={idx}>
-                <label html-for='item_name'>Item</label>
+                <label html-for='itemName'>Item</label>
                 <input
                   type='text'
-                  name='item_name'
+                  name='itemName'
                   value={items[idx].item_name}
                   data-idx={idx}
-                  className='item_name'
+                  className='itemName'
                   onChange={handleNewItem}
                 />
                 <label html-for='image'>Upload Image</label>
@@ -120,18 +120,20 @@ function AddGroup () {
                   <input type='radio' id='no' name='paid' value='no' />
                   <label html-for='no'>No</label>
                   <label>Is there a primary funder?</label>
-                  <select name='primaryFunder'>
+                  <select
+                    name='primaryFunder'
+                    className='primaryFunder'
+                    data-idx={idx}
+                    onChange={handleNewItem}
+                  >
                     <option value=''>--Select an Option--</option>
-                    {coOwners.map((value, index) => {
+                    {coOwners.map((coOwner, index) => {
                       return (
                         <option
                           key={index}
-                          data-idx={idx}
-                          className='primaryFunder'
-                          value={items[idx].primaryFunder}
-                          onChange={handleNewItem}
+                          value={coOwners[index].firstName}
                         >
-                          {coOwners[index].first_name}
+                          {coOwners[index].firstName}
                         </option>
                       )
                     })}
@@ -148,14 +150,22 @@ function AddGroup () {
           />
         </fieldset>
         {coOwners.length &&
-          coOwners.map((value, idx) => {
+          coOwners.map((coOwner, idx) => {
             return (
               <fieldset key={idx}>
-                <legend>{coOwners[idx].first_name}</legend>
-                <label>Payment Amount</label>
-                <input type='text' inputMode='numeric' pattern='[0-9]*' />
-                <label>Payment Frequency</label>
-                <input type='date' />
+                <legend>{coOwners[idx].firstName}</legend>
+                {items.map((item, index) => {
+                  return items[index].primaryFunder === coOwners[idx].firstName ? null :
+                  (
+                    <React.Fragment key={index}>
+                      <p>{items[index].itemName}</p>
+                      <label>Payment Amount</label>
+                      <input type='text' inputMode='numeric' pattern='[0-9]*' />
+                      <label>Payment Frequency</label>
+                      <input type='date' />
+                    </React.Fragment>
+                  )
+                })}
               </fieldset>
             )
           })}
