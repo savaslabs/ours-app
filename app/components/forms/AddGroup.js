@@ -38,18 +38,28 @@ function AddGroup () {
     setGroup({...group, groupName: name })
   }
 
-  // Dynamically set state when new item is added.
-  const handleNewItem = e => {
-    const updatedItems = [...items]
-    updatedItems[e.target.dataset.idx][e.target.className] = e.target.value
-    setItems(updatedItems)
-  }
+  // Dynamically set state when item or coOwner input is updated.
+  const handleNewInput = (e, input) => {
+    e.preventDefault()
 
-  // Dynamically set state when new co-owner is added.
-  const handleNewCoOwner = e => {
-    const updatedCoOwners = [...coOwners]
-    updatedCoOwners[e.target.dataset.idx][e.target.className] = e.target.value
-    setCoOwners(updatedCoOwners)
+    switch (input) {
+      case 'item':
+        const updatedItems = [...items]
+        switch (e.target.className) {
+          default:
+            updatedItems[e.target.dataset.idx][e.target.className] = e.target.value
+            break
+          case 'image':
+            updatedItems[e.target.dataset.idx][e.target.className] =
+              e.target.files[0]
+        }
+        setItems(updatedItems)
+      break;
+      case 'coOwner':
+        const updatedCoOwners = [...coOwners]
+        updatedCoOwners[e.target.dataset.idx][e.target.className] = e.target.value
+        setCoOwners(updatedCoOwners)
+    }
   }
 
   // Listen for updates to items, coOwners.
@@ -89,7 +99,7 @@ function AddGroup () {
               value={coOwners[idx].firstName || ''}
               data-idx={idx}
               name='firstName'
-              onChange={handleNewCoOwner}
+              onChange={e => handleNewInput(e, 'coOwner')}
             />
             <input
               type='email'
@@ -97,7 +107,7 @@ function AddGroup () {
               name='email'
               value={coOwners[idx].email || ''}
               className='email'
-              onChange={handleNewCoOwner}
+              onChange={e => handleNewInput(e, 'coOwner')}
             />
           </React.Fragment>
         )
@@ -116,70 +126,83 @@ function AddGroup () {
                 value={items[idx].itemName || ''}
                 data-idx={idx}
                 className='itemName'
-                onChange={handleNewItem}
+                onChange={e => handleNewInput(e, 'item')}
               />
-              <label html-for='image'>Upload Image</label>
-              <input
-                type='file'
-                name='image'
-                value={items[idx].image || ''}
-                data-idx={idx}
-                className='image'
-                onChange={handleNewItem}
-              />
-              <label html-for='cost'>Cost of item</label>
-              <input
-                type='text'
-                inputMode='numeric'
-                pattern='[0-9]*'
-                name='cost'
-                value={items[idx].cost || ''}
-                data-idx={idx}
-                className='cost'
-                onChange={handleNewItem}
-              />
-              <fieldset>
-                <legend>Is this item fully paid for?</legend>
-                <input
-                  type='radio'
-                  id='TRUE'
-                  data-idx={idx}
-                  name='paidOff'
-                  className='paidOff'
-                  value='TRUE'
-                  onInput={handleNewItem}
-                />
-                <label html-for='TRUE'>Yes</label>
-                <input
-                  type='radio'
-                  id='FALSE'
-                  data-idx={idx}
-                  name='paidOff'
-                  className='paidOff'
-                  value='FALSE'
-                  onInput={handleNewItem}
-                />
-                <label html-for='FALSE'>No</label>
-                <label>Is there a primary funder?</label>
-                <select
-                  name='primaryFunder'
-                  className='primaryFunder'
-                  data-idx={idx}
-                  onChange={handleNewItem}
-                >
-                  <option value=''>--Select an Option--</option>
-                  {coOwners.map((coOwner, index) => {
-                    return (
-                      <option
-                        key={index}
-                        value={coOwners[index].firstName || ''}
-                      >
-                        {coOwners[index].firstName}
-                      </option>
-                    )
-                  })}
-                </select>
-              </fieldset>
+              {/* Wait to render additional item inputs until item name has been added.  */}
+              {items[idx].itemName && (
+                <React.Fragment>
+                  <label html-for='image'>Upload Image</label>
+                  <input
+                    type='file'
+                    name='image'
+                    data-idx={idx}
+                    className='image'
+                    onChange={e => handleNewInput(e, 'item')}
+                  />
+                  <label html-for='cost'>Cost of item</label>
+                  <input
+                    type='text'
+                    inputMode='numeric'
+                    pattern='[0-9]*'
+                    name='cost'
+                    value={items[idx].cost || ''}
+                    data-idx={idx}
+                    className='cost'
+                    onChange={e => handleNewInput(e, 'item')}
+                  />
+                  <fieldset>
+                    <legend>Is this item fully paid for?</legend>
+                    <input
+                      type='radio'
+                      id='TRUE'
+                      data-idx={idx}
+                      name='paidOff'
+                      className='paidOff'
+                      value='TRUE'
+                      onInput={e => handleNewInput(e, 'item')}
+                    />
+                    <label html-for='TRUE'>Yes</label>
+                    <input
+                      type='radio'
+                      id='FALSE'
+                      data-idx={idx}
+                      name='paidOff'
+                      className='paidOff'
+                      value='FALSE'
+                      onInput={e => handleNewInput(e, 'item')}
+                    />
+                    <label html-for='FALSE'>No</label>
+                    <input
+                      type='date'
+                      id='endDate'
+                      className='endDate'
+                      data-idx={idx}
+                      value={items[idx].endDate || ''}
+                      onChange={e => handleNewInput(e, 'item')}
+                    />
+                    <label html-for='endDate'>Payment End Date</label>
+                    <label>Is there a primary funder?</label>
+                    <select
+                      name='primaryFunder'
+                      className='primaryFunder'
+                      data-idx={idx}
+                      onChange={e => handleNewInput(e, 'item')}
+                    >
+                      <option value=''>--Select an Option--</option>
+                      {coOwners.map((coOwner, index) => {
+                        return (
+                          <option
+                            key={index}
+                            value={coOwners[index].firstName || ''}
+                          >
+                            {coOwners[index].firstName}
+                          </option>
+                        )
+                      })}
+                    </select>
+                  </fieldset>
+                </React.Fragment>
+              )}
             </React.Fragment>
           )
         })}
