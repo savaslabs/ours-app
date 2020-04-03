@@ -14,9 +14,13 @@ module.exports = (env, arg) => {
     entry: './app/index.js',
     output: {
       path: path.resolve(__dirname, 'build'),
-      filename: '[name].js'
+      filename: '[name].js',
+      publicPath: '/'
     },
     resolve: { extensions: ['.js'] },
+    devServer: {
+      historyApiFallback: true
+    },
     module: {
       rules: [
         // Javascript
@@ -99,5 +103,5 @@ module.exports = (env, arg) => {
       new FriendlyErrorsWebpackPlugin()
     ],
     stats: 'errors-only'
-  };
+  }
 };
