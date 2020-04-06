@@ -3,9 +3,10 @@ import { BrowserRouter, Switch, Route } from 'react-router-dom'
 import firebaseConfig from '../firebaseConfig'
 import './index.scss'
 
-import protectedRoutes from './protectedRoutes'
-import ProtectedRouteHoc from './ProtectedRouteHoc'
+import Header from './components/Header'
 import Landing from './components/routes/Landing'
+import protectedRoutes from './ProtectedRoutes'
+import ProtectedRouteHoc from './ProtectedRouteHoc'
 
 export const AuthContext = React.createContext(null)
 
@@ -24,7 +25,9 @@ function App() {
 
   return (
     <AuthContext.Provider value={{ isLoggedIn, setLoggedIn }}>
+      Is logged in? {JSON.stringify(isLoggedIn)}
       <BrowserRouter>
+        <Header isLoggedIn={isLoggedIn} />
         <Switch>
           <Route exact path={['/', '/welcome']} component={Landing} />
           {protectedRoutes.map((route) => (
