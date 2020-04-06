@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import * as FirestoreService from '../../firestore'
 
 function AddGroup () {
   const blankGroup = {
@@ -77,6 +78,14 @@ function AddGroup () {
     e.preventDefault();
 
     console.log('submitted');
+    let userName = 'Mandy';
+    let userId = '1';
+
+    FirestoreService.addGroup(userName, userId)
+      .then((docRef) => {
+        onCreate(docRef.id, userName)
+      })
+      .catch((reason) => console.log('add group error'))
   }
 
   return (
