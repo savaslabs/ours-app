@@ -22,13 +22,13 @@ If user exists, add user reference
 If user does not exist, invite user to join app
 Add items
 */
-export const addGroup = (userId, groupName, coOwners, items) => {
+export const addGroup = (userId, group, coOwners, items) => {
   return db
     .collection('groups')
     .add({
       created: firebase.firestore.FieldValue.serverTimestamp(),
       createdBy: userId,
-      groupName: groupName
+      groupName: group
     })
     .then((docRef) => {
       coOwners.forEach((coOwner) => {

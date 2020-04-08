@@ -59,11 +59,11 @@ function AddGroup () {
 
     let user = firebase.auth().currentUser
     let userId = user.uid
-    let groupName = group.groupName;
+    let group = groupName;
 
-    FirestoreService.addGroup(userId, groupName, coOwners, items)
+    FirestoreService.addGroup(userId, group, coOwners, items)
       .then((docRef) => {
-        onCreate(docRef.id, groupName, coOwners, items)
+        onCreate(docRef.id, group, coOwners, items)
       })
       .catch((reason) => console.log(reason))
   }
