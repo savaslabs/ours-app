@@ -40,21 +40,16 @@ export const addGroup = (userId, group, coOwners, items) => {
               return db
                 .collection('groups')
                 .doc(docRef.id)
-                .collection('users')
-                .add({
-                  email: coOwner.email,
-                  name: coOwner.firstName
+                .update({
+                  coOwners: firebase.firestore.FieldValue.arrayUnion(coOwner.email)
                 })
             } else {
               console.log(`${coOwner.email} does exist`)
               return db
                 .collection('groups')
                 .doc(docRef.id)
-                .collection('users')
-                .doc(matchingItem[0].id)
-                .set({
-                  email: coOwner.email,
-                  name: coOwner.firstName
+                .update({
+                  coOwners: firebase.firestore.FieldValue.arrayUnion(matchingItem[0].id)
                 })
             }
           })
@@ -103,12 +98,12 @@ export const addItemToGroup = (item, groupId, userId) => {
     })
 }
 
-// Get all associated coOwnership groups
-export const getGroups = (userId) => {
+// Get all associated coOwnership groups with currentUser
+export const streamAssociatedGroups = (userId, observer) => {
   return db
     .collection('groups')
-    .doc(userId)
-    .get()
+    .where('coOwners', 'array-contains', userId)
+    .onSnapshot(observer)
 }
 
 // Get all associated items
