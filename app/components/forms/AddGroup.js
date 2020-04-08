@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import * as FirestoreService from '../../firestore'
+import firebase from 'firebase/app'
 
 function AddGroup () {
   const blankGroup = {
@@ -77,15 +78,15 @@ function AddGroup () {
   const handleSubmit = e => {
     e.preventDefault();
 
-    console.log('submitted');
-    let userName = 'Mandy';
-    let userId = '1';
+    let user = firebase.auth().currentUser
+    let userId = user.uid
+    let groupName = group.groupName;
 
-    FirestoreService.addGroup(userName, userId)
+    FirestoreService.addGroup(userId, groupName)
       .then((docRef) => {
-        onCreate(docRef.id, userName)
+        onCreate(docRef.id, groupName)
       })
-      .catch((reason) => console.log('add group error'))
+      .catch((reason) => console.log(reason))
   }
 
   return (
