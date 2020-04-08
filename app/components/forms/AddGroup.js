@@ -3,11 +3,6 @@ import * as FirestoreService from '../../firestore'
 import firebase from 'firebase/app'
 
 function AddGroup () {
-  const blankGroup = {
-    groupName: '',
-    items: [],
-    coOwners: [],
-  }
 
   const blankItem = {
     itemName: '',
@@ -23,7 +18,7 @@ function AddGroup () {
     email: ''
   }
 
-  const [group, setGroup] = useState(blankGroup)
+  const [groupName, setGroupName] = useState('')
   const [items, setItems] = useState([{ ...blankItem }])
   const [coOwners, setCoOwners] = useState([{ ...blankCoOwner }])
 
@@ -32,12 +27,6 @@ function AddGroup () {
   }
   const addCoOwner = () => {
     setCoOwners([...coOwners, { ...blankCoOwner }])
-  }
-
-  // Dynamically set state when new group is added.
-  const handleNewGroup = e => {
-    let name = e.target.value
-    setGroup({...group, groupName: name })
   }
 
   // Dynamically set state when item or coOwner input is updated.
@@ -64,16 +53,6 @@ function AddGroup () {
     }
   }
 
-  // Listen for updates to items, coOwners.
-  useEffect(() => {
-    updateGroup(items, coOwners)
-  }, [items, coOwners])
-
-  // Update group state when items, coOwners are updated.
-  const updateGroup = (items, coOwners) => {
-    setGroup({ ...group, items: [ ...items], coOwners: [ ...coOwners] })
-  }
-
   // Update db on submit.
   const handleSubmit = e => {
     e.preventDefault();
@@ -96,8 +75,8 @@ function AddGroup () {
         id='groupName'
         className='groupName'
         type='text'
-        value={group.groupName}
-        onChange={handleNewGroup}
+        value={groupName}
+        onChange={e => setGroupName(e.target.value)}
       />
       <label html-for='email'>Co-owners</label>
       {coOwners.map((coOwner, idx) => {

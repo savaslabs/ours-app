@@ -128,4 +128,3 @@ export const streamItems = (groupId, observer) => {
     .collection('items')
     .onSnapshot(observer)
 }
-
