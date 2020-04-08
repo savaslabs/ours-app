@@ -74,7 +74,7 @@ function AddGroup () {
     setGroup({ ...group, items: [ ...items], coOwners: [ ...coOwners] })
   }
 
-  // Mimic submit button.
+  // Update db on submit.
   const handleSubmit = e => {
     e.preventDefault();
 
@@ -82,9 +82,9 @@ function AddGroup () {
     let userId = user.uid
     let groupName = group.groupName;
 
-    FirestoreService.addGroup(userId, groupName)
+    FirestoreService.addGroup(userId, groupName, coOwners, items)
       .then((docRef) => {
-        onCreate(docRef.id, groupName)
+        onCreate(docRef.id, groupName, coOwners, items)
       })
       .catch((reason) => console.log(reason))
   }
