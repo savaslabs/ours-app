@@ -1,14 +1,18 @@
 import React, { useState, useContext } from 'react'
 import { AuthContext } from '../../App'
-import * as firebase from 'firebase/app'
 import { withRouter } from 'react-router-dom'
 
+import * as firebase from 'firebase/app'
+import * as FirestoreService from '../../firestore'
+
 const Join = ({ history }) => {
+  const [displayName, setDisplayName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setErrors] = useState('')
 
   const Auth = useContext(AuthContext)
+
   const handleForm = (e) => {
     e.preventDefault()
 
@@ -19,10 +23,15 @@ const Join = ({ history }) => {
         firebase
           .auth()
           .createUserWithEmailAndPassword(email, password)
-          .then((res) => {
-            console.log(res)
+          .then((cred) => {
+            /* Create new user in Firestore
+            with same userid as Firebase user
+            */
+            const userId = cred.user.uid;
+            FirestoreService.addUser(userId, displayName, email);
+            console.log(cred)
             history.push('/me')
-            if (res.user) Auth.setLoggedIn(true)
+            if (cred.user) Auth.setLoggedIn(true)
           })
           .catch((e) => {
             setErrors(e.message)
@@ -40,8 +49,15 @@ const Join = ({ history }) => {
         firebase
           .auth()
           .signInWithPopup(provider)
-          .then((result) => {
-            console.log(result)
+          .then((cred) => {
+            /* Create new user in Firestore
+            with same userid as Firebase user
+            */
+            const userId = cred.user.uid;
+            const displayName = cred.user.displayName;
+            const email = cred.user.email
+            FirestoreService.addUser(userId, displayName, email);
+            console.log(cred)
             history.push('/me')
             Auth.setLoggedIn(true)
           })
@@ -52,6 +68,13 @@ const Join = ({ history }) => {
     <div>
       <h1>Join</h1>
       <form onSubmit={(e) => handleForm(e)}>
+        <input
+          type='displayName'
+          placeholder='Display name'
+          name='displayName'
+          value={displayName}
+          onChange={(e) => setDisplayName(e.target.value)}
+        />
         <input
           type='email'
           placeholder='email'

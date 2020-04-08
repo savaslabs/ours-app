@@ -7,7 +7,7 @@ const Header = () => {
   const { isLoggedIn } = useContext(AuthContext)
   return (
     <ul className='nav'>
-      {protectedRoutes.map((route, i) => (
+      {isLoggedIn && protectedRoutes.map((route, i) => (
         <li key={i}>
           <Link to={route.path}>{route.name}</Link>
         </li>
