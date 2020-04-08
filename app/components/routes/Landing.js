@@ -1,6 +1,6 @@
 import React from 'react'
-import Join from './Join'
-import Login from './Login'
+import Join from '../forms/Join'
+import Login from '../forms/Login'
 
 const Landing = () => {
   return (
