@@ -25,11 +25,26 @@ function Community() {
   }, [currentUser, setAssociatedGroups])
 
   return (
-    <React.Fragment>
+    <main>
       <h1>Community Page</h1>
-      {associatedGroups && associatedGroups.map((group, i) => <div key={i}>{group.groupName}</div>)}
-      <AddGroupForm />
-    </React.Fragment>
+      <div className='flex flex-row'>
+        <div className='flex-col'>
+          {associatedGroups &&
+            associatedGroups.map((group, i) => (
+              <article key={i} className='rounded shadow'>
+                <h1>Group: {group.groupName}</h1>
+                <ul>
+                  Members:{' '}
+                  {group.coOwners.map((users, index) => {
+                    return <li key={index}>{users}</li>
+                  })}
+                </ul>
+              </article>
+            ))}
+        </div>
+        <AddGroupForm />
+      </div>
+    </main>
   )
 }
 
