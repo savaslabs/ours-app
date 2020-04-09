@@ -6,13 +6,18 @@ import { AuthContext } from '../App'
 const Header = () => {
   const { isLoggedIn } = useContext(AuthContext)
   return (
-    <ul className='nav'>
-      {isLoggedIn && protectedRoutes.map((route, i) => (
-        <li key={i}>
-          <Link to={route.path}>{route.name}</Link>
-        </li>
-      ))}
-    </ul>
+    <header className='nav flex justify-end'>
+      <nav>
+        <ul className='flex flex-row justify-between'>
+          {isLoggedIn &&
+            protectedRoutes.map((route, i) => (
+              <li key={i} className='flex'>
+                <Link to={route.path}>{route.name}</Link>
+              </li>
+            ))}
+        </ul>
+      </nav>
+    </header>
   )
 }
 
