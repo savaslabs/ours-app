@@ -4,11 +4,11 @@ import Login from '../forms/Login'
 
 const Landing = () => {
   return (
-    <React.Fragment>
+    <main>
       <h1>Landing Page</h1>
       <Join />
       <Login />
-    </React.Fragment>
+    </main>
   )
 };
 

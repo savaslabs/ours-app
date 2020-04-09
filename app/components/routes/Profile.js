@@ -21,10 +21,10 @@ function Profile() {
       })
   }
   return (
-  <React.Fragment>
+  <main>
     <h1>Profile Page</h1>
     {isLoggedIn && <button onClick={signOut}>Sign Out</button>}
-  </React.Fragment>
+  </main>
   )
 }
 

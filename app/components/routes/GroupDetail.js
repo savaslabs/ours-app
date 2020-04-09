@@ -1,7 +1,11 @@
 import React from 'react'
 
 function GroupDetail() {
-  return <h1>Group Detail Page</h1>
+  return (
+    <main>
+      <h1>Group Detail Page</h1>
+    </main>
+  )
 }
 
 export default GroupDetail
