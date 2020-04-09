@@ -16,57 +16,79 @@ export const addUser = (userId, displayName, email) => {
 
 /*
 Create new coOwnership group:
-Create new group with group name
+Create new group if unique group name
 Find user in db based on matching email
 If user exists, add user reference
 If user does not exist, invite user to join app
 Add items
 */
 export const addGroup = (userId, group, coOwners, items) => {
-  return db
-    .collection('groups')
-    .add({
-      created: firebase.firestore.FieldValue.serverTimestamp(),
-      createdBy: userId,
-      groupName: group
-    })
-    .then((docRef) => {
-      coOwners.forEach((coOwner) => {
-        return findUser(coOwner.email)
-          .then((querySnapshot) => querySnapshot.docs)
-          .then((matchingItem) => {
-            if (matchingItem.length === 0) {
-              console.log(`${coOwner.email} doesnt exist`)
-              return db
-                .collection('groups')
-                .doc(docRef.id)
-                .update({
-                  coOwners: firebase.firestore.FieldValue.arrayUnion(coOwner.email)
-                })
-            } else {
-              console.log(`${coOwner.email} does exist`)
-              return db
-                .collection('groups')
-                .doc(docRef.id)
-                .update({
-                  coOwners: firebase.firestore.FieldValue.arrayUnion(matchingItem[0].id)
-                })
-            }
+  return checkGroupName(group)
+    .then((querySnapshot) => querySnapshot.docs)
+    .then((matchingItem) => {
+      if (matchingItem.length === 0) {
+        console.log(`${group} is not taken`)
+        return db
+          .collection('groups')
+          .add({
+            created: firebase.firestore.FieldValue.serverTimestamp(),
+            createdBy: userId,
+            groupName: group
           })
-          .then(() => {
-            items.forEach((item) => {
+          .then((docRef) => {
+            coOwners.forEach((coOwner) => {
+              return findUser(coOwner.email)
+                .then((querySnapshot) => querySnapshot.docs)
+                .then((matchingItem) => {
+                  if (matchingItem.length === 0) {
+                    console.log(`${coOwner.email} doesnt exist`)
+                    return db
+                      .collection('groups')
+                      .doc(docRef.id)
+                      .update({
+                        coOwners: firebase.firestore.FieldValue.arrayUnion(
+                          coOwner.email
+                        )
+                      })
+                  } else {
+                    console.log(`${coOwner.email} does exist`)
+                    return db
+                      .collection('groups')
+                      .doc(docRef.id)
+                      .update({
+                        coOwners: firebase.firestore.FieldValue.arrayUnion(
+                          matchingItem[0].id
+                        )
+                      })
+                  }
+                })
+              })
+            return items.forEach((item) => {
               return db
                 .collection('groups')
                 .doc(docRef.id)
                 .collection('items')
                 .add({
                   name: item.itemName,
-                  cost: item.cost
+                  cost: item.cost,
+                  paidOff: item.paidOff,
+                  endDate: item.endDate,
+                  primaryFunder: item.primaryFunder,
                 })
             })
           })
-      })
+      } else {
+        console.log(`${group} is taken. Chose a new groupName`)
+      }
     })
+}
+
+// Check if groupName is already used
+export const checkGroupName = (groupName) => {
+  return db
+    .collection('groups')
+    .where('groupName', '==', groupName)
+    .get()
 }
 
 // Find if user exists in system
