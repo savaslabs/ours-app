@@ -137,9 +137,17 @@ export const getGroupItems = (groupId) => {
     .get()
 }
 
-// Get all item details
+// Get all items associated with groupId
 export const streamItems = (groupId, observer) => {
-  return db
+  return Array.isArray(groupId) ?
+    groupId.forEach((id, index) => {
+      return db
+        .collection('groups')
+        .doc(id)
+        .collection('items')
+        .onSnapshot(observer)
+    })
+  : db
     .collection('groups')
     .doc(groupId)
     .collection('items')
