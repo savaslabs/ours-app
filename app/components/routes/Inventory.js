@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import AddItemToGroup from '../forms/AddItemToGroup'
 import ThemedStyleSheet from 'react-with-styles/lib/ThemedStyleSheet'
 import aphroditeInterface from 'react-with-styles-interface-aphrodite'
 import DefaultTheme from 'react-dates/lib/theme/DefaultTheme'
@@ -18,7 +19,11 @@ function Inventory() {
   // temporarily set groupId for dev.
   const [groupId, setGroupId] = useState('P6vWW5M99sliQU2JJ4ax')
   const [groupIds, setGroupIds] = useState()
+
+  const [groups, setGroups] = useState()
   const [items, setItems] = useState()
+
+  const [isAddFormVisible, setIsAddFormVisible] = useState(false);
 
   const [startDate, setStartDate] = useState(null)
   const [endDate, setEndDate] = useState(null)
@@ -32,6 +37,11 @@ function Inventory() {
         const updatedGroupIds = querySnapshot.docs.map((docSnapshot) =>
           docSnapshot.id
         )
+
+        const updatedGroups = querySnapshot.docs.map((docSnapshot) =>
+          docSnapshot.data()
+        )
+        setGroups(updatedGroups);
         setGroupIds(updatedGroupIds)
       }
     })
@@ -56,20 +66,60 @@ function Inventory() {
     )
   }, [groupId, setItems])
 
+  const toggleForm = e => {
+    setIsAddFormVisible(!isAddFormVisible);
+  }
+
+  const displayItems = () => {
+    return (
+      items &&
+      items.map((item, i) => (
+        <dl key={i}>
+          {Object.keys(item).map((key,i)=>{
+            return (
+              <React.Fragment key={i}>
+                <dt>{key}</dt>
+                <dd>{item[key]}</dd>
+              </React.Fragment>
+              )
+          })}
+        </dl>
+      ))
+    )
+  }
+
   return (
     <main>
       <h1>Inventory Page</h1>
-      {items && items.map((item, i) => <div key={i}>{item.name}{item.cost}{item.paidOff}{item.primaryFunder}</div>)}
-      <DayPickerRangeController
-        startDate={startDate}
-        endDate={endDate}
-        onDatesChange={({ startDate, endDate }) => {
-          setStartDate(startDate)
-          setEndDate(endDate)
-        }}
-        focusedInput={focusedInput}
-        onFocusChange={(focusedInput) => setFocusedInput(focusedInput)}
-      />
+      <div className='container flex flex-row justify-evenly'>
+        <section className='flex flex-col'>
+          <h2>Your Inventory</h2>
+          {displayItems()}
+        </section>
+        <section className='flex'>
+          <DayPickerRangeController
+            startDate={startDate}
+            endDate={endDate}
+            onDatesChange={({ startDate, endDate }) => {
+              setStartDate(startDate)
+              setEndDate(endDate)
+            }}
+            focusedInput={focusedInput}
+            onFocusChange={(focusedInput) => setFocusedInput(focusedInput)}
+          />
+        </section>
+        <section className='flex flex-col'>
+          {groups && (
+            <React.Fragment>
+              <button onClick={toggleForm}>Add New Item to Group</button>
+              <AddItemToGroup
+                groups={groups}
+                isAddFormVisible={isAddFormVisible}
+              />
+            </React.Fragment>
+          )}
+        </section>
+      </div>
     </main>
   )
 }

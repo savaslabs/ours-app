@@ -112,9 +112,13 @@ export const addItemToGroup = (item, groupId, userId) => {
     .then((matchingItem) => {
       if (!matchingItem) {
         return db.collection('groups').doc(groupId).collection('items').add({
-          name: item,
           created: firebase.firestore.FieldValue.serverTimestamp(),
-          createdBy: userId
+          createdBy: userId,
+          name: item.itemName,
+          cost: item.cost,
+          paidOff: item.paidOff,
+          endDate: item.endDate,
+          primaryFunder: item.primaryFunder,
         })
       }
     })
