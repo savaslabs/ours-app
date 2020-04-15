@@ -16,9 +16,7 @@ function Inventory() {
   )
 
   // temporarily set groupId for dev.
-  const [groupId, setGroupId] = useState(
-    'zAGGtLgp4nmnKVGdPeiw'
-  )
+  const [groupId, setGroupId] = useState('P6vWW5M99sliQU2JJ4ax')
   const [groupIds, setGroupIds] = useState()
   const [items, setItems] = useState()
 
@@ -51,6 +49,7 @@ function Inventory() {
           const updatedItems = querySnapshot.docs.map(
             (docSnapshot) => docSnapshot.data()
           )
+
           setItems(updatedItems)
         }
       }
@@ -60,7 +59,7 @@ function Inventory() {
   return (
     <main>
       <h1>Inventory Page</h1>
-      {items && items.map((item, i) => <div key={i}>{item.name}</div>)}
+      {items && items.map((item, i) => <div key={i}>{item.name}{item.cost}{item.paidOff}{item.primaryFunder}</div>)}
       <DayPickerRangeController
         startDate={startDate}
         endDate={endDate}
@@ -69,7 +68,7 @@ function Inventory() {
           setEndDate(endDate)
         }}
         focusedInput={focusedInput}
-        onFocusChange={focusedInput => setFocusedInput(focusedInput)}
+        onFocusChange={(focusedInput) => setFocusedInput(focusedInput)}
       />
     </main>
   )

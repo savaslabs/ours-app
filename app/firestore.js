@@ -145,6 +145,7 @@ export const streamItems = (groupId, observer) => {
         .collection('groups')
         .doc(id)
         .collection('items')
+        .doc()
         .onSnapshot(observer)
     })
   : db
