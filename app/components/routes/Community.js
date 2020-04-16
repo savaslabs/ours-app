@@ -7,8 +7,8 @@ function Community(props) {
   return (
     <main>
       <h1>Community Page</h1>
-      <div className='flex flex-row'>
-        <div className='flex-col'>
+      <div className='flex flex-row w-full justify-evenly'>
+        <div className='flex flex-col'>
           {groups &&
             groups.map((group, i) => (
               <article key={i} className='rounded shadow'>

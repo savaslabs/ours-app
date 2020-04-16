@@ -67,7 +67,7 @@ function AddGroup (props) {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form className='flex flex-col' onSubmit={handleSubmit}>
       <label html-for='groupName'>Group Name</label>
       <input
         id='groupName'
