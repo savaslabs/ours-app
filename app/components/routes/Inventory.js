@@ -14,6 +14,8 @@ function Inventory(props) {
   // Form.
   const [isAddFormVisible, setIsAddFormVisible] = useState(false);
 
+  // TODO: figure out how to get all querySnapshots;
+  // right now I can only add the last one to state.
   useEffect(() => {
     if (groupIds.length > 0) {
     const unsubscribe = FirestoreService.streamItems(
