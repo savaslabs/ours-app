@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { BrowserRouter, Switch, Route } from 'react-router-dom'
 import firebaseConfig from '../firebaseConfig'
 import './index.scss'
+import '@babel/polyfill'
 
 import Header from './components/Header'
 import Landing from './components/routes/Landing'

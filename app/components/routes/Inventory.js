@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react'
 import AddItemToGroup from '../forms/AddItemToGroup'
+
+// React-Date.
+import { DayPickerRangeController } from 'react-dates'
 import ThemedStyleSheet from 'react-with-styles/lib/ThemedStyleSheet'
 import aphroditeInterface from 'react-with-styles-interface-aphrodite'
 import DefaultTheme from 'react-dates/lib/theme/DefaultTheme'
-
 ThemedStyleSheet.registerInterface(aphroditeInterface)
 ThemedStyleSheet.registerTheme(DefaultTheme)
 
-import { DayPickerRangeController } from 'react-dates';
+// Firebase/firestore.
 import * as FirestoreService from '../../firestore'
 import * as firebase from 'firebase/app'
 
@@ -16,15 +18,15 @@ function Inventory() {
     firebase.auth().currentUser.uid
   )
 
-  // temporarily set groupId for dev.
-  const [groupId, setGroupId] = useState('P6vWW5M99sliQU2JJ4ax')
-  const [groupIds, setGroupIds] = useState()
+  // Inventory.
+  const [groupIds, setGroupIds] = useState([])
+  const [groups, setGroups] = useState([])
+  const [items, setItems] = useState([])
 
-  const [groups, setGroups] = useState()
-  const [items, setItems] = useState()
-
+  // Form.
   const [isAddFormVisible, setIsAddFormVisible] = useState(false);
 
+  // Date picker.
   const [startDate, setStartDate] = useState(null)
   const [endDate, setEndDate] = useState(null)
   const [focusedInput, setFocusedInput] = useState('startDate')
@@ -48,50 +50,33 @@ function Inventory() {
     return unsubscribe
   }, [currentUser, setGroupIds])
 
-  // Use an effect hook to subscribe to the item stream and
-  // automatically unsubscribe when the component unmounts.
-  // TODO: streamItems should take in groupIds and subscribe to groupIds
-  useEffect(() => {
-    FirestoreService.streamItems(
-      groupId,
-      {
-        next: (querySnapshot) => {
-          const updatedItems = querySnapshot.docs.map(
-            (docSnapshot) => docSnapshot.data()
-          )
 
-          setItems(updatedItems)
+  useEffect(() => {
+    async function fetchItems() {
+      const ids = await groupIds;
+      const unsubscribe = FirestoreService.streamItems(
+        ids,
+        {
+          next: (querySnapshot) => {
+            const updatedItems = querySnapshot.docs.map(
+              (docSnapshot) => docSnapshot.data()
+            )
+
+            setItems(updatedItems)
+          }
         }
-      }
-    )
-  }, [groupId, setItems])
+      )
+      return unsubscribe
+    }
+    fetchItems()
+  }, [groupIds, setItems])
 
   const toggleForm = e => {
     setIsAddFormVisible(!isAddFormVisible);
   }
 
-  const displayItems = () => {
-    return (
-      items.map((item, i) => {
-        return (
-          <dl key={i}>
-            {Object.keys(item).map((key, i) => {
-              if (key == 'created') {
-                return null
-              } else {
-                return (
-                  <React.Fragment key={i}>
-                    <dt>{key}</dt>
-                    <dd>{item[key]}</dd>
-                  </React.Fragment>
-                )
-              }
-            })}
-          </dl>
-        )
-      })
-    )
-  }
+  useEffect(() => {
+  }, [items])
 
   return (
     <main>
@@ -99,7 +84,28 @@ function Inventory() {
       <div className='container flex flex-row justify-evenly'>
         <section className='flex flex-col'>
           <h2>Your Inventory</h2>
-          {items && displayItems()}
+          {items.length > 0 ? (
+            items.map((item, i) => {
+              return (
+                <dl key={i}>
+                  {Object.keys(item).map((key, i) => {
+                    if (key == 'created') {
+                      return null
+                    } else {
+                      return (
+                        <React.Fragment key={i}>
+                          <dt>{key}</dt>
+                          <dd>{item[key]}</dd>
+                        </React.Fragment>
+                      )
+                    }
+                  })}
+                </dl>
+              )
+            })
+          ) : (
+            <div>Loading...</div>
+          )}
         </section>
         <section className='flex'>
           <DayPickerRangeController
