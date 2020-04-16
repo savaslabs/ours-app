@@ -63,17 +63,19 @@ export const addGroup = (userId, group, coOwners, items) => {
                   }
                 })
               })
-            return items.forEach((item) => {
+            return items.forEach(item => {
               return db
                 .collection('groups')
                 .doc(docRef.id)
                 .collection('items')
                 .add({
+                  created: firebase.firestore.FieldValue.serverTimestamp(),
+                  createdBy: userId,
                   name: item.itemName,
                   cost: item.cost,
                   paidOff: item.paidOff,
                   endDate: item.endDate,
-                  primaryFunder: item.primaryFunder,
+                  primaryFunder: item.primaryFunder
                 })
             })
           })
@@ -99,26 +101,26 @@ export const findUser = (email) => {
     .get()
 }
 
-// Add new item to coOwnership group
-export const addItemToGroup = (item, groupId, userId) => {
-  return getGroupItems(groupId)
+// Add new item to existing coOwnership group
+export const addItemToGroup = (items, groupName, userId) => {
+  return checkGroupName(groupName)
     .then((querySnapshot) => querySnapshot.docs)
-    .then((groupItems) =>
-      groupItems.find(
-        (groupItem) =>
-          groupItem.data().name.toLowerCase() === item.toLowerCase()
-      )
-    )
     .then((matchingItem) => {
-      if (!matchingItem) {
-        return db.collection('groups').doc(groupId).collection('items').add({
-          created: firebase.firestore.FieldValue.serverTimestamp(),
-          createdBy: userId,
-          name: item.itemName,
-          cost: item.cost,
-          paidOff: item.paidOff,
-          endDate: item.endDate,
-          primaryFunder: item.primaryFunder,
+      if (matchingItem.length !== 0) {
+        items.forEach((item) => {
+          return db
+            .collection('groups')
+            .doc(matchingItem[0].id)
+            .collection('items')
+            .add({
+              created: firebase.firestore.FieldValue.serverTimestamp(),
+              createdBy: userId,
+              name: item.itemName,
+              cost: item.cost,
+              paidOff: item.paidOff,
+              endDate: item.endDate,
+              primaryFunder: item.primaryFunder
+            })
         })
       }
     })

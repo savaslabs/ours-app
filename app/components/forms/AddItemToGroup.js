@@ -54,6 +54,15 @@ function AddItemToGroup(props) {
   // Update db on submit.
   const handleSubmit = e => {
     e.preventDefault()
+
+    let user = firebase.auth().currentUser
+    let userId = user.uid
+
+    FirestoreService.addItemToGroup(items, selectedGroup, userId)
+      .then((docRef) => {
+        onCreate(docRef.id, items, selectedGroup, userId)
+      })
+      .catch((reason) => console.log(reason))
   }
 
   return isAddFormVisible ? (

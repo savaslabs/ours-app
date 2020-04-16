@@ -72,19 +72,24 @@ function Inventory() {
 
   const displayItems = () => {
     return (
-      items &&
-      items.map((item, i) => (
-        <dl key={i}>
-          {Object.keys(item).map((key,i)=>{
-            return (
-              <React.Fragment key={i}>
-                <dt>{key}</dt>
-                <dd>{item[key]}</dd>
-              </React.Fragment>
-              )
-          })}
-        </dl>
-      ))
+      items.map((item, i) => {
+        return (
+          <dl key={i}>
+            {Object.keys(item).map((key, i) => {
+              if (key == 'created') {
+                return null
+              } else {
+                return (
+                  <React.Fragment key={i}>
+                    <dt>{key}</dt>
+                    <dd>{item[key]}</dd>
+                  </React.Fragment>
+                )
+              }
+            })}
+          </dl>
+        )
+      })
     )
   }
 
@@ -94,7 +99,7 @@ function Inventory() {
       <div className='container flex flex-row justify-evenly'>
         <section className='flex flex-col'>
           <h2>Your Inventory</h2>
-          {displayItems()}
+          {items && displayItems()}
         </section>
         <section className='flex'>
           <DayPickerRangeController
