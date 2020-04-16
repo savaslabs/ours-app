@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { withRouter } from 'react-router-dom'
 
 function ItemCard(props) {
+  const [isAvailable, setIsAvailable] = useState(false)
 
   const toItemDetail = e => {
     let path = `/inventory/${props.item.id}`
@@ -14,6 +15,7 @@ function ItemCard(props) {
         <dt>Cost</dt>
         <dd>{props.item.cost}</dd>
       </dl>
+      <p>{isAvailable ? 'Avaiable' : 'Checked Out'}</p>
     </article>
   )
 }
