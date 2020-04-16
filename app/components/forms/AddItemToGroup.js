@@ -30,11 +30,9 @@ function AddItemToGroup(props) {
 
       setCoOwners(selection[0]['coOwners']);
     }
-
-    // setCoOwners(selection[0].coOwners)
   }, [selectedGroup, setCoOwners])
 
-  // Dynamically set state when item or coOwner input is updated.
+  // Dynamically set state when item or input is updated.
   const handleNewInput = e => {
     e.preventDefault()
 
@@ -51,7 +49,6 @@ function AddItemToGroup(props) {
     setItems(updatedItems)
   }
 
-  // Update db on submit.
   const handleSubmit = e => {
     e.preventDefault()
 
@@ -117,7 +114,7 @@ function AddItemToGroup(props) {
                     value={items[idx].cost || ''}
                     data-idx={idx}
                     className='cost'
-                    onChange={(e) => handleNewInput(e, 'item')}
+                    onChange={handleNewInput}
                   />
                   <fieldset>
                     <legend>Is this item fully paid for?</legend>

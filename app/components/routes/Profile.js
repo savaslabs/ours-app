@@ -9,7 +9,7 @@ function Profile() {
 
   console.log(firebase.auth().currentUser.uid)
 
-  const signOut = (e) => {
+  const signOut = e => {
     firebase
       .auth()
       .signOut()

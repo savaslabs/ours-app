@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import AddItemToGroup from '../forms/AddItemToGroup'
+import ItemsList from './ItemsList'
+import { bool, array, object } from 'prop-types'
 
 // React-Date.
 import { DayPickerRangeController } from 'react-dates'
@@ -11,16 +13,10 @@ ThemedStyleSheet.registerTheme(DefaultTheme)
 
 // Firebase/firestore.
 import * as FirestoreService from '../../firestore'
-import * as firebase from 'firebase/app'
 
-function Inventory() {
-  const [currentUser, setCurrentUser] = useState(
-    firebase.auth().currentUser.uid
-  )
-
+function Inventory(props) {
+  const { groups, groupIds } = props;
   // Inventory.
-  const [groupIds, setGroupIds] = useState([])
-  const [groups, setGroups] = useState([])
   const [items, setItems] = useState([])
 
   // Form.
@@ -31,52 +27,28 @@ function Inventory() {
   const [endDate, setEndDate] = useState(null)
   const [focusedInput, setFocusedInput] = useState('startDate')
 
-  // Use an effect hook to subscribe to the item stream and
-  // automatically unsubscribe when the component unmounts.
   useEffect(() => {
-    const unsubscribe = FirestoreService.streamAssociatedGroups(currentUser, {
-      next: (querySnapshot) => {
-        const updatedGroupIds = querySnapshot.docs.map((docSnapshot) =>
-          docSnapshot.id
-        )
-
-        const updatedGroups = querySnapshot.docs.map((docSnapshot) =>
-          docSnapshot.data()
-        )
-        setGroups(updatedGroups);
-        setGroupIds(updatedGroupIds)
-      }
-    })
-    return unsubscribe
-  }, [currentUser, setGroupIds])
-
-
-  useEffect(() => {
-    async function fetchItems() {
-      const ids = await groupIds;
-      const unsubscribe = FirestoreService.streamItems(
-        ids,
-        {
-          next: (querySnapshot) => {
-            const updatedItems = querySnapshot.docs.map(
-              (docSnapshot) => docSnapshot.data()
-            )
-
-            setItems(updatedItems)
-          }
+    if (groupIds.length > 0) {
+    const unsubscribe = FirestoreService.streamItems(
+      groupIds,
+      {
+        next: (querySnapshot) => {
+          const updatedItems = querySnapshot.docs.map(
+            (docSnapshot) => docSnapshot.data()
+          )
+          setItems(updatedItems)
         }
-      )
-      return unsubscribe
+      }
+    )
+    return unsubscribe
+    } else {
+      console.log('props havent loaded yet')
     }
-    fetchItems()
   }, [groupIds, setItems])
 
   const toggleForm = e => {
     setIsAddFormVisible(!isAddFormVisible);
   }
-
-  useEffect(() => {
-  }, [items])
 
   return (
     <main>
@@ -84,28 +56,10 @@ function Inventory() {
       <div className='container flex flex-row justify-evenly'>
         <section className='flex flex-col'>
           <h2>Your Inventory</h2>
-          {items.length > 0 ? (
-            items.map((item, i) => {
-              return (
-                <dl key={i}>
-                  {Object.keys(item).map((key, i) => {
-                    if (key == 'created') {
-                      return null
-                    } else {
-                      return (
-                        <React.Fragment key={i}>
-                          <dt>{key}</dt>
-                          <dd>{item[key]}</dd>
-                        </React.Fragment>
-                      )
-                    }
-                  })}
-                </dl>
-              )
-            })
-          ) : (
-            <div>Loading...</div>
-          )}
+          {items.length > 0
+          ? (<ItemsList items={items} {...props} />)
+          : (<div>Loading...</div>)
+          }
         </section>
         <section className='flex'>
           <DayPickerRangeController
@@ -133,6 +87,13 @@ function Inventory() {
       </div>
     </main>
   )
+}
+
+Inventory.propTypes = {
+  isLoggedIn: bool,
+  groups: array,
+  groupIds: array,
+  props: object
 }
 
 export default Inventory

@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import * as FirestoreService from '../../firestore'
-import firebase from 'firebase/app'
 
-function AddGroup () {
-
+function AddGroup (props) {
+  const { currentUser } = props;
   const blankItem = {
     itemName: '',
     image: '',
@@ -57,8 +56,7 @@ function AddGroup () {
   const handleSubmit = e => {
     e.preventDefault();
 
-    let user = firebase.auth().currentUser
-    let userId = user.uid
+    let userId = currentUser
     let group = groupName;
 
     FirestoreService.addGroup(userId, group, coOwners, items)
@@ -77,6 +75,7 @@ function AddGroup () {
         type='text'
         value={groupName}
         onChange={e => setGroupName(e.target.value)}
+        required
       />
       <label html-for='email'>Co-owners</label>
       {coOwners.map((coOwner, idx) => {
@@ -89,6 +88,7 @@ function AddGroup () {
               data-idx={idx}
               name='firstName'
               onChange={e => handleNewInput(e, 'coOwner')}
+              required
             />
             <input
               type='email'
@@ -97,6 +97,7 @@ function AddGroup () {
               value={coOwners[idx].email || ''}
               className='email'
               onChange={e => handleNewInput(e, 'coOwner')}
+              required
             />
           </React.Fragment>
         )
@@ -116,6 +117,7 @@ function AddGroup () {
                 data-idx={idx}
                 className='itemName'
                 onChange={e => handleNewInput(e, 'item')}
+                required
               />
               {/* Wait to render additional item inputs until item name has been added.  */}
               {items[idx].itemName && (
@@ -138,6 +140,7 @@ function AddGroup () {
                     data-idx={idx}
                     className='cost'
                     onChange={e => handleNewInput(e, 'item')}
+                    required
                   />
                   <fieldset>
                     <legend>Is this item fully paid for?</legend>
@@ -149,6 +152,7 @@ function AddGroup () {
                       className='paidOff'
                       value='TRUE'
                       onInput={e => handleNewInput(e, 'item')}
+                      required
                     />
                     <label html-for='TRUE'>Yes</label>
                     <input
@@ -176,6 +180,7 @@ function AddGroup () {
                       className='primaryFunder'
                       data-idx={idx}
                       onChange={e => handleNewInput(e, 'item')}
+                      required
                     >
                       <option value=''>--Select an Option--</option>
                       {coOwners.map((coOwner, index) => {
