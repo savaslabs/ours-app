@@ -33,10 +33,15 @@ function Inventory(props) {
       groupIds,
       {
         next: (querySnapshot) => {
-          const updatedItems = querySnapshot.docs.map(
-            (docSnapshot) => docSnapshot.data()
+          const item = querySnapshot.docs.map(
+            (docSnapshot) => {
+              let item = docSnapshot.data();
+              item['id'] = docSnapshot.id;
+
+              return item;
+            }
           )
-          setItems(updatedItems)
+          setItems(item)
         }
       }
     )
