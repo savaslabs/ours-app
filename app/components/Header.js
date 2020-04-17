@@ -11,10 +11,11 @@ const Header = () => {
         <ul className='flex flex-row justify-between'>
           {isLoggedIn &&
             protectedRoutes.map((route, i) => (
-              route.name === 'ItemDetail' ? null :
-              <li key={i} className='flex'>
-                <Link to={route.path}>{route.name}</Link>
-              </li>
+              route.inNav
+              ? <li key={i} className='flex'>
+                  <Link to={route.path}>{route.name}</Link>
+                </li>
+              : null
             ))}
         </ul>
       </nav>
