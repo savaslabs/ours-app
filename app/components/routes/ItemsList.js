@@ -1,8 +1,8 @@
 import React from 'react'
 import ItemCard from './ItemCard'
 
-const ItemsList = ({ items }) => {
-  return items.map((item, i) => {
+const ItemsList = ({ allUserItems }) => {
+  return allUserItems.map((item, i) => {
     return <ItemCard key={i} item={item} />
   })
 }

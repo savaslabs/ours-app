@@ -3,7 +3,7 @@ import { AuthContext } from '../../App'
 
 import * as firebase from 'firebase/app'
 
-function Profile() {
+function Profile({ history }) {
   const Auth = useContext(AuthContext)
   const { isLoggedIn } = useContext(AuthContext)
 
@@ -15,6 +15,7 @@ function Profile() {
       .signOut()
       .then(() => {
         Auth.setLoggedIn(false)
+        history.push('/')
       })
       .catch((error) => {
         console.log(error)

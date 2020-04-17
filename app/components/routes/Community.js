@@ -1,9 +1,11 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import GroupCard from './GroupCard'
 import AddGroupForm from '../forms/AddGroup'
+import { AuthContext } from '../../App'
 
-function Community(props) {
-  const { currentUser, groups } = props;
+function Community() {
+
+  const { currentUser, groups } = useContext(AuthContext)
 
   return (
     <main>
@@ -12,7 +14,7 @@ function Community(props) {
         <div className='flex flex-col'>
           {groups &&
             groups.map((group, i) => (
-              <GroupCard key={i} {...props} group={group} />
+              <GroupCard key={i} group={group} />
             ))}
         </div>
         <AddGroupForm currentUser={currentUser} />

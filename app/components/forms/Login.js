@@ -9,6 +9,7 @@ const Login = ({history}) => {
   const [error, setErrors] = useState('')
 
   const Auth = useContext(AuthContext)
+
   const handleForm = (e) => {
     e.preventDefault()
     firebase
