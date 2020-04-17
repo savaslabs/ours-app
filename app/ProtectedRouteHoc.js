@@ -24,7 +24,12 @@ const ProtectedRouteHoc = ({ component: Component, isLoggedIn, ...rest }) => {
           )
 
           const updatedGroups = querySnapshot.docs.map((docSnapshot) =>
-            docSnapshot.data()
+           {
+              let updatedGroups = docSnapshot.data();
+              updatedGroups['id'] = docSnapshot.id;
+
+              return updatedGroups;
+            }
           )
           setGroups(updatedGroups)
           setGroupIds(updatedGroupIds)

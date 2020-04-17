@@ -134,13 +134,14 @@ export const streamAssociatedGroups = (userId, observer) => {
     .onSnapshot(observer)
 }
 
-// Get all associated items
-export const getGroupItems = (groupId) => {
+// Get item by itemId
+export const getItem = (itemId, observer) => {
   return db
     .collection('groups')
-    .doc(groupId)
+    .doc()
     .collection('items')
-    .get()
+    .doc(itemId)
+    .onSnapshot(observer)
 }
 
 // Get all items associated with groupId

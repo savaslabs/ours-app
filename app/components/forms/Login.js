@@ -39,7 +39,6 @@ const Login = ({history}) => {
           .signInWithPopup(provider)
           .then((result) => {
             console.log(result)
-            history.push('/inventory')
             Auth.setLoggedIn(true)
           })
           .catch((e) => setErrors(e.message))

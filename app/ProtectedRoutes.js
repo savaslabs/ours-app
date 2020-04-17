@@ -2,6 +2,7 @@ import React from 'react'
 import Inventory from './components/routes/Inventory'
 import ItemDetail from './components/routes/ItemDetail'
 import Community from './components/routes/Community'
+import GroupDetail from './components/routes/GroupDetail'
 import Profile from './components/routes/Profile'
 
 const protectedRoutes = [
@@ -31,6 +32,13 @@ const protectedRoutes = [
     exact: true,
     path: '/inventory/:itemId',
     main: (props) => <ItemDetail {...props} />,
+    public: false
+  },
+  {
+    name: 'GroupDetail',
+    exact: true,
+    path: '/community/:groupId',
+    main: (props) => <GroupDetail {...props} />,
     public: false
   }
 ]

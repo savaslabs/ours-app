@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
+import GroupCard from './GroupCard'
 import AddGroupForm from '../forms/AddGroup'
 
 function Community(props) {
@@ -11,15 +12,7 @@ function Community(props) {
         <div className='flex flex-col'>
           {groups &&
             groups.map((group, i) => (
-              <article key={i} className='rounded shadow'>
-                <h1>Group: {group.groupName}</h1>
-                <ul>
-                  Members:{' '}
-                  {group.coOwners.map((users, index) => {
-                    return <li key={index}>{users}</li>
-                  })}
-                </ul>
-              </article>
+              <GroupCard key={i} {...props} group={group} />
             ))}
         </div>
         <AddGroupForm currentUser={currentUser} />
